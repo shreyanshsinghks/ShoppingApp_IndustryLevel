@@ -1,6 +1,7 @@
 package com.shreyanshsinghks.shoppingappindustrylevel.feature.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +69,8 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
                     val data = (uiState.value as HomeScreenUIEvents.Success)
                     HomeContent(
                         featured = data.featured,
-                        popularProducts = data.popularProducts
+                        popularProducts = data.popularProducts,
+                        categories = data.categories
                     )
 
                 }
@@ -83,7 +86,11 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
 @Composable
 fun SearchBar(value: String, onTextChanged: (String) -> Unit) {
     TextField(
-        value = value, onValueChange = onTextChanged, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        value = value,
+        onValueChange = onTextChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(16.dp),
         leadingIcon = {
             Image(
@@ -144,15 +151,37 @@ fun ProfileHeader() {
 }
 
 @Composable
-fun HomeContent(featured: List<Product>, popularProducts: List<Product>) {
+fun HomeContent(
+    featured: List<Product>,
+    popularProducts: List<Product>,
+    categories: List<String>
+) {
     LazyColumn {
         item {
             ProfileHeader()
             Spacer(modifier = Modifier.height(16.dp))
             SearchBar(value = "", onTextChanged = {})
+            Spacer(modifier = Modifier.height(16.dp))
         }
         item {
+            if (categories.isNotEmpty()) {
+                LazyRow {
+                    items(categories) { category ->
+                        Text(
+                            text = category.replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                                .padding(12.dp),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
             if (featured.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
                 HomeProductRow(products = featured, title = "Featured")
                 Spacer(modifier = Modifier.height(16.dp))
             }
