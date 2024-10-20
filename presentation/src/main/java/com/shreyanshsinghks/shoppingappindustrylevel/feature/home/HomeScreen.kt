@@ -47,10 +47,10 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = koinView
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold { innerPadding ->
+        innerPadding
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
         ) {
             when (uiState.value) {
                 is HomeScreenUIEvents.Loading -> {

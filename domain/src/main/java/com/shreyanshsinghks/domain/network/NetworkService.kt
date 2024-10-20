@@ -1,9 +1,9 @@
 package com.shreyanshsinghks.domain.network
 
-import com.shreyanshsinghks.domain.model.Product
+import com.shreyanshsinghks.domain.model.ProductListModel
 
 interface NetworkService {
-    suspend fun getProducts(category: String?): ResultWrapper<List<Product>>
+    suspend fun getProducts(category: Int?): ResultWrapper<ProductListModel>
     suspend fun getCategories(): ResultWrapper<List<String>>
 }
 

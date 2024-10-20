@@ -24,10 +24,10 @@ class HomeViewModel(
     private fun getAllProducts() {
         viewModelScope.launch {
             _uiState.value = HomeScreenUIEvents.Loading
-            val featured = getProducts("electronics")
-            val popularProducts = getProducts("jewelery")
+            val featured = getProducts(1)
+            val popularProducts = getProducts(2)
             val categories = getCategories()
-            if (featured.isEmpty() || popularProducts.isEmpty() || categories.isEmpty()) {
+            if (featured.isEmpty() && popularProducts.isEmpty() && categories.isEmpty()) {
                 _uiState.value = HomeScreenUIEvents.Error("Failed to fetch products")
                 return@launch
             }
@@ -49,11 +49,11 @@ class HomeViewModel(
         }
     }
 
-    private suspend fun getProducts(category: String?): List<Product> {
-        getProductUseCase.invoke(category = category).let { result ->
+    private suspend fun getProducts(category: Int?): List<Product> {
+        getProductUseCase.execute(category = category).let { result ->
             when (result) {
                 is ResultWrapper.Success -> {
-                    return result.value
+                    return result.value.products
                 }
 
                 is ResultWrapper.Failure -> {
